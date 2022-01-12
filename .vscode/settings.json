@@ -1,0 +1,11 @@
+{
+    "git.detectSubmodules": false,
+    "git.ignoreSubmodules": true,
+    "files.associations": {
+        "macro_utils.h": "c",
+        "threadapi.h": "c",
+        "platform.h": "c",
+        "iothub_device_client.h": "c"
+    },
+    "idf.adapterTargetName": "esp32"
+}
