@@ -5,7 +5,8 @@
         "macro_utils.h": "c",
         "threadapi.h": "c",
         "platform.h": "c",
-        "iothub_device_client.h": "c"
+        "iothub_device_client.h": "c",
+        "wifi.h": "c"
     },
     "idf.adapterTargetName": "esp32"
 }

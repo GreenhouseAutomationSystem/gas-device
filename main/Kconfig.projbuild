@@ -1,0 +1,48 @@
+menu "Wifi connection"
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "myssid"
+        help
+            SSID (network name) for the example to connect to.
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "mypassword"
+        help
+            WiFi password (WPA or WPA2) for the example to use.
+
+    config ESP_MAXIMUM_RETRY
+        int "Maximum retry"
+        default 5
+        help
+            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+endmenu
+
+menu "System time"
+    config TIME_ZONE
+        string "Time zone"
+        default "UTC-2"
+        help 
+            Set time zone for system time.
+
+    config SNTP_SERVER
+        string "Sntp server"
+        default "pool.ntp.org"
+        help
+            Set SNTP server
+endmenu
+
+menu "System"
+    config SCHEDULER_PIN
+        int "Scheduler gpio pin"
+        default 5
+        help
+            Set scheduler pin
+
+    config SCHEDULER_MAX_RECORDS
+        int "Scheduler max records"
+        default 32
+        help
+            Set maximum number of scheduler records 
+endmenu
