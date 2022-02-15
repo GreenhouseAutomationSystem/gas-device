@@ -4,7 +4,7 @@ static const char *TAG = "device_twin";
 
 static const char *connectionString = CONFIG_IOTHUB_CONNECTION_STRING;
 
-static const State state;
+static State state;
 
 IOTHUB_DEVICE_CLIENT_LL_HANDLE iotHubClientHandle;
 
@@ -116,11 +116,8 @@ void device_twin_init()
     // bool traceOn = true;
     //(void)IoTHubDeviceClient_SetOption(iotHubClientHandle, OPTION_LOG_TRACE, &traceOn);
 
-    memset(&state, 0, sizeof(State));
-
     IOTHUB_CLIENT_RESULT err =
         IoTHubDeviceClient_LL_SetDeviceTwinCallback(iotHubClientHandle, deviceTwinCallback, &state);
-
     if (err != IOTHUB_CLIENT_OK)
     {
         ESP_LOGE(TAG, "%s", "Failed to set DeviceTwin callback. Aborting...");
