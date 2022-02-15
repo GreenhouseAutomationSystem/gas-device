@@ -19,18 +19,11 @@ menu "Wifi connection"
             Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 endmenu
 
-menu "System time"
-    config TIME_ZONE
-        string "Time zone"
-        default "UTC-2"
-        help 
-            Set time zone for system time.
+menu "IotHub"
 
-    config SNTP_SERVER
-        string "Sntp server"
-        default "pool.ntp.org"
-        help
-            Set SNTP server
+    config IOTHUB_CONNECTION_STRING
+        string "IotHub Connection String"
+        default "connection string"
 endmenu
 
 menu "System"

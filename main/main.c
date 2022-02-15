@@ -1,9 +1,8 @@
+#include "device_twin.h"
 #include "time_utils.h"
+#include "wifi.h"
 #include <nvs_flash.h>
 #include <stdio.h>
-#include <wifi.h>
-
-static const char *TAG = "main";
 
 void app_main(void)
 {
@@ -17,7 +16,7 @@ void app_main(void)
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-    time_init();
-
     wifi_init();
+
+    device_twin_init();
 }

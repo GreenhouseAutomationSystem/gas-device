@@ -1,15 +1,5 @@
 #include "time_utils.h"
 
-void time_init()
-{
-    setenv("TZ", CONFIG_TIME_ZONE, 1);
-    tzset();
-
-    sntp_setoperatingmode(SNTP_OPMODE_POLL);
-    sntp_setservername(0, CONFIG_SNTP_SERVER);
-    sntp_init();
-}
-
 void time_now(char *string, size_t max_size)
 {
     time_t now;
