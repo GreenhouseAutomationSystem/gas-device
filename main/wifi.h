@@ -14,10 +14,6 @@
 #define WIFI_PASS CONFIG_ESP_WIFI_PASSWORD
 #define WIFI_MAXIMUM_RETRY CONFIG_ESP_MAXIMUM_RETRY
 
-/**
- * @brief Initialize wifi
- *
- */
 void wifi_init();
 
 #endif

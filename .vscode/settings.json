@@ -16,7 +16,19 @@
         "stddef.h": "c",
         "esp_flash.h": "c",
         "freertos.h": "c",
-        "task.h": "c"
+        "task.h": "c",
+        "esp_wifi.h": "c",
+        "adc.h": "c",
+        "state.h": "c",
+        "time_utils.h": "c",
+        "sntp.h": "c",
+        "*.ipp": "c",
+        "cstring": "c",
+        "*.inc": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "algorithm": "c",
+        "interval.h": "c"
     },
     "idf.adapterTargetName": "esp32",
     "git.autoRepositoryDetection": false

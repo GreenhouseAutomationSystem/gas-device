@@ -2,96 +2,45 @@
 
 static const char *TAG = "device_twin";
 
-static const char *connectionString = CONFIG_IOTHUB_CONNECTION_STRING;
+static const char *connection_string = CONFIG_IOTHUB_CONNECTION_STRING;
 
-static State state;
+IOTHUB_DEVICE_CLIENT_LL_HANDLE iothub_client_handle;
 
-IOTHUB_DEVICE_CLIENT_LL_HANDLE iotHubClientHandle;
-
-char *to_json(State *state)
-{
-    JSON_Value *root_value = json_value_init_object();
-    JSON_Object *root_object = json_value_get_object(root_value);
-
-    (void)json_object_set_string(root_object, "status", state->status);
-
-    char *result = json_serialize_to_string(root_value);
-    json_value_free(root_value);
-
-    return result;
-}
-
-void from_json(const char *json, DEVICE_TWIN_UPDATE_STATE update_state, State *out)
-{
-    JSON_Value *root_value = NULL;
-    JSON_Object *root_object = NULL;
-
-    root_value = json_parse_string(json);
-    root_object = json_value_get_object(root_value);
-
-    // Only desired properties:
-    JSON_Value *status;
-
-    if (update_state == DEVICE_TWIN_UPDATE_COMPLETE)
-    {
-        status = json_object_dotget_value(root_object, "desired.status");
-    }
-    else
-    {
-        status = json_object_get_value(root_object, "status");
-    }
-
-    if (status != NULL)
-    {
-        const char *status_string = json_value_get_string(status);
-
-        if (status_string != NULL)
-        {
-            (void)strcpy(out->status, status_string);
-        }
-    }
-
-    json_value_free(root_value);
-}
-
-void reportedStateCallback(int status_code, void *userContextCallback)
+void reported_state_callback(int status_code, void *userContextCallback)
 {
     (void)userContextCallback;
     printf("Device Twin reported properties update completed with result: %d\r\n", status_code);
 }
 
-void deviceTwinCallback(DEVICE_TWIN_UPDATE_STATE update_state, const unsigned char *payLoad, size_t size,
-                        void *userContextCallback)
+void device_twin_callback(DEVICE_TWIN_UPDATE_STATE update_state, const unsigned char *payload, size_t size,
+                          void *userContextCallback)
 {
-    (void)update_state;
-    (void)size;
-
-    State new_state;
-    (void)memset(&new_state, 0, sizeof(State));
-    from_json((const char *)payLoad, update_state, &new_state);
-
-    State *state = (State *)userContextCallback;
-
-    if (new_state.status != NULL)
+    JSON_Value *root_value = json_parse_string((const char *)payload);
+    JSON_Object *root_object = json_value_get_object(root_value);
+    if (update_state == DEVICE_TWIN_UPDATE_COMPLETE)
     {
-        if (strcmp(state->status, new_state.status) != 0)
-        {
-            printf("Received a new status = %s\n", new_state.status);
-            (void)strcpy(state->status, new_state.status);
-        }
+        root_object = json_object_get_object(root_object, "desired");
     }
 
-    char *reported_properties = to_json(state);
-    (void)IoTHubDeviceClient_LL_SendReportedState(iotHubClientHandle, (const unsigned char *)reported_properties,
-                                                  strlen(reported_properties), reportedStateCallback, NULL);
-    free(reported_properties);
+    char *str = json_serialize_to_string_pretty(root_value);
+    printf("%s/n", str);
+    json_free_serialized_string(str);
+
+    JSON_Array *schedules = json_object_get_array(root_object, "schedules");
+    if (schedules != NULL)
+    {
+        ESP_LOGI(TAG, "%s", "Setting schedules.");
+        ctrl_schedules_set(schedules);
+    }
+
+    json_value_free(root_value);
 }
 
 void device_twin_task(void *param)
 {
     while (1)
     {
-        IoTHubDeviceClient_LL_DoWork(iotHubClientHandle);
+        IoTHubDeviceClient_LL_DoWork(iothub_client_handle);
         ThreadAPI_Sleep(10);
     }
     vTaskDelete(NULL);
@@ -105,19 +54,20 @@ void device_twin_init()
         abort();
     }
 
-    iotHubClientHandle = IoTHubDeviceClient_LL_CreateFromConnectionString(connectionString, MQTT_Protocol);
-    if (iotHubClientHandle == NULL)
+    iothub_client_handle = IoTHubDeviceClient_LL_CreateFromConnectionString(connection_string, MQTT_Protocol);
+    if (iothub_client_handle == NULL)
     {
-        ESP_LOGE(TAG, "%s", "Failed to create IotHubClientHandle from connection string. Aborting...");
+        ESP_LOGE(TAG, "%s", "Failed to create iothub_client_handle from connection string. Aborting...");
         abort();
     }
 
     // Verbose loging
     // bool traceOn = true;
-    //(void)IoTHubDeviceClient_SetOption(iotHubClientHandle, OPTION_LOG_TRACE, &traceOn);
+    //(void)IoTHubDeviceClient_SetOption(iothub_client_handle, OPTION_LOG_TRACE, &traceOn);
 
     IOTHUB_CLIENT_RESULT err =
-        IoTHubDeviceClient_LL_SetDeviceTwinCallback(iotHubClientHandle, deviceTwinCallback, &state);
+        IoTHubDeviceClient_LL_SetDeviceTwinCallback(iothub_client_handle, device_twin_callback, NULL);
+
     if (err != IOTHUB_CLIENT_OK)
     {
         ESP_LOGE(TAG, "%s", "Failed to set DeviceTwin callback. Aborting...");
