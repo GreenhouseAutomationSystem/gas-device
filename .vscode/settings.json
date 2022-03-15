@@ -28,7 +28,8 @@
         "bitset": "c",
         "chrono": "c",
         "algorithm": "c",
-        "interval.h": "c"
+        "interval.h": "c",
+        "iothub_client_options.h": "c"
     },
     "idf.adapterTargetName": "esp32",
     "git.autoRepositoryDetection": false

@@ -21,6 +21,7 @@
 #include "iothubtransportmqtt.h"
 #include "parson.h"
 #include "sdkconfig.h"
+#include <esp_wifi.h>
 
 void device_twin_init();
 

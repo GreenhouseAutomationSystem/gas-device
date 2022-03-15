@@ -36,9 +36,37 @@ void device_twin_callback(DEVICE_TWIN_UPDATE_STATE update_state, const unsigned 
     json_value_free(root_value);
 }
 
+void device_reporter_task(void *param)
+{
+    while (true)
+    {
+
+        JSON_Value *root_value = json_value_init_object();
+        JSON_Object *root_object = json_value_get_object(root_value);
+
+        wifi_ap_record_t ap_info;
+        esp_wifi_sta_get_ap_info(&ap_info);
+
+        json_object_set_number(root_object, "rssi", ap_info.rssi);
+
+        char *str = json_serialize_to_string_pretty(root_value);
+        printf("%s/n", str);
+        json_free_serialized_string(str);
+
+        char *message_string = json_serialize_to_string(root_value);
+        IOTHUB_MESSAGE_HANDLE message = IoTHubMessage_CreateFromString(message_string);
+        IoTHubDeviceClient_LL_SendEventAsync(iothub_client_handle, message, NULL, NULL);
+
+        IoTHubMessage_Destroy(message);
+        json_free_serialized_string(message_string);
+
+        ThreadAPI_Sleep(30000);
+    }
+}
+
 void device_twin_task(void *param)
 {
-    while (1)
+    while (true)
     {
         IoTHubDeviceClient_LL_DoWork(iothub_client_handle);
         ThreadAPI_Sleep(10);
@@ -77,6 +105,12 @@ void device_twin_init()
     if (xTaskCreate(&device_twin_task, "device_twin_task", 1024 * 6, NULL, 5, NULL) != pdPASS)
     {
         ESP_LOGE(TAG, "%s", "Failed to start client task, aborting...");
+        abort();
+    }
+
+    if (xTaskCreate(&device_reporter_task, "device_reporter_task", 1024 * 2, NULL, 5, NULL) != pdPASS)
+    {
+        ESP_LOGE(TAG, "%s", "Failed to start reporter task, aborting...");
         abort();
     }
 }
