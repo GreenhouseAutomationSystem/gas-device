@@ -14,7 +14,7 @@
 typedef struct schedule
 {
     pin_t pin;
-    int interval_max;
+    int period;
     int intervals_count;
     interval_t intervals[SCHEDULE_MAX_INTERVALS];
 } schedule_t;

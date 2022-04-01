@@ -32,5 +32,6 @@
         "iothub_client_options.h": "c"
     },
     "idf.adapterTargetName": "esp32",
-    "git.autoRepositoryDetection": false
+    "git.autoRepositoryDetection": false,
+    "idf.flashType": "UART"
 }

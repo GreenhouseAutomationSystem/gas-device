@@ -20,7 +20,7 @@ void state_schedules_set(state_t *state, JSON_Array *json_schedules)
         JSON_Object *json_schedule = json_array_get_object(json_schedules, s);
 
         pin_init(&schedule->pin, json_object_get_number(json_schedule, "pinNumber"));
-        schedule->interval_max = json_object_get_number(json_schedule, "intervalMax");
+        schedule->period = json_object_get_number(json_schedule, "period");
 
         JSON_Array *intervals = json_object_get_array(json_schedule, "intervals");
         schedule->intervals_count = json_array_get_count(intervals);
