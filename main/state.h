@@ -4,8 +4,7 @@
 #include "scheduler.h"
 #include <parson.h>
 
-#define MAX_SCHEDULES_LEN 8
-const static int DEFAULT_SCHEDULE_PINS[MAX_SCHEDULES_LEN] = {15, 2, 0, 4, 16, 17, 5, 18};
+#define MAX_SCHEDULES_LEN 4
 
 typedef struct state
 {

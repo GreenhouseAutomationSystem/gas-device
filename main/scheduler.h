@@ -9,7 +9,7 @@
 #include <esp_log.h>
 
 #define SCHEDULE_MAX_INTERVALS CONFIG_SCHEDULER_MAX_RECORDS
-#define MAX_SCHEDULES 8
+#define MAX_SCHEDULES 4
 
 typedef struct schedule
 {
