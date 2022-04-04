@@ -13,7 +13,7 @@ void schedule_task(void *_schedules)
     for (size_t s = 0; s < MAX_SCHEDULES; s++)
     {
         schedule_t *schedule = &schedules[s];
-        ESP_LOGI(TAG, "max %d", schedule->interval_max);
+        ESP_LOGI(TAG, "max %d", schedule->period);
         ESP_LOGI(TAG, "count %d", schedule->intervals_count);
         ESP_LOGI(TAG, "pin %d", schedule->pin.number);
         for (size_t i = 0; i < schedule->intervals_count; i++)
@@ -25,7 +25,7 @@ void schedule_task(void *_schedules)
         for (size_t i = 0; i < schedule->intervals_count; i++)
         {
             // TODO: check if we can not miss any time record coz of < <=
-            if (time < schedule->intervals[i].end)
+            if (time % schedule->period < schedule->intervals[i].end)
             {
                 index[s] = i;
                 break;
@@ -46,9 +46,9 @@ void schedule_task(void *_schedules)
             schedule_t *schedule = &schedules[s];
 
             bool level = schedule->pin.level;
-            bool change = level
-                              ? schedule->intervals[index[s]].end <= time
-                              : schedule->intervals[index[s]].start <= time && time < schedule->intervals[index[s]].end;
+            bool change = level ? schedule->intervals[index[s]].end <= (time % schedule->period)
+                                : schedule->intervals[index[s]].start <= (time % schedule->period) &&
+                                      (time % schedule->period) < schedule->intervals[index[s]].end;
 
             if (change)
             {
