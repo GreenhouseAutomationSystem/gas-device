@@ -8,7 +8,7 @@ void time_now(char *string, size_t max_size)
     time(&now);
     localtime_r(&now, &timeinfo);
 
-    strftime(string, max_size, "%FT%T.000Z", &timeinfo);
+    strftime(string, max_size, "%FT%TZ", &timeinfo);
 }
 
 int time_now_to_sec()
