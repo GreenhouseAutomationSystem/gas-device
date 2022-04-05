@@ -45,6 +45,11 @@ void schedule_task(void *_schedules)
         {
             schedule_t *schedule = &schedules[s];
 
+            if (schedule->intervals_count == 0)
+            {
+                continue;
+            }
+
             bool level = schedule->pin.level;
             bool change = level ? schedule->intervals[index[s]].end <= (time % schedule->period)
                                 : schedule->intervals[index[s]].start <= (time % schedule->period) &&
