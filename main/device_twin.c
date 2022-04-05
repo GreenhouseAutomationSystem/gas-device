@@ -47,6 +47,10 @@ void device_reporter_task(void *param)
         wifi_ap_record_t ap_info;
         esp_wifi_sta_get_ap_info(&ap_info);
 
+        char time[32];
+        time_now(time, 32);
+
+        json_object_set_string(root_object, "dateTime", time);
         json_object_set_number(root_object, "rssi", ap_info.rssi);
         json_object_set_number(root_object, "systemTemperature0", temperature_get(TEMPERATURE_SENSOR_0));
         json_object_set_number(root_object, "systemTemperature1", temperature_get(TEMPERATURE_SENSOR_1));
