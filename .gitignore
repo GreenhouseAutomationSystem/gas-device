@@ -56,3 +56,4 @@ build/
 sdkconfig
 sdkconfig.old
 sdkconfig.default
+debug.log

@@ -23,7 +23,7 @@ void device_twin_callback(DEVICE_TWIN_UPDATE_STATE update_state, const unsigned 
     }
 
     char *str = json_serialize_to_string_pretty(root_value);
-    printf("%s/n", str);
+    printf("%s\n", str);
     json_free_serialized_string(str);
 
     JSON_Array *schedules = json_object_get_array(root_object, "schedules");
@@ -48,9 +48,11 @@ void device_reporter_task(void *param)
         esp_wifi_sta_get_ap_info(&ap_info);
 
         json_object_set_number(root_object, "rssi", ap_info.rssi);
+        json_object_set_number(root_object, "systemTemperature0", temperature_get(TEMPERATURE_SENSOR_0));
+        json_object_set_number(root_object, "systemTemperature1", temperature_get(TEMPERATURE_SENSOR_1));
 
         char *str = json_serialize_to_string_pretty(root_value);
-        printf("%s/n", str);
+        printf("%s\n", str);
         json_free_serialized_string(str);
 
         char *message_string = json_serialize_to_string(root_value);

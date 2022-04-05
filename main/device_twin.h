@@ -25,9 +25,4 @@
 
 void device_twin_init();
 
-typedef struct
-{
-    char status[32];
-} State;
-
 #endif

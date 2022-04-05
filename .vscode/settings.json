@@ -29,7 +29,13 @@
         "chrono": "c",
         "algorithm": "c",
         "interval.h": "c",
-        "iothub_client_options.h": "c"
+        "iothub_client_options.h": "c",
+        "temperature_sensor.h": "c",
+        "controller.h": "c",
+        "device_twin.h": "c",
+        "future": "c",
+        "istream": "c",
+        "ostream": "c"
     },
     "idf.adapterTargetName": "esp32",
     "git.autoRepositoryDetection": false,
