@@ -20,7 +20,7 @@ void pin_set(pin_t *pin, bool level)
 {
     char time_buff[64];
     time_now(time_buff, 64);
-    ESP_LOGI(TAG, "%s %s Pin number: %d", time_buff, level ? "Task on" : "Task off", pin->number);
+    ESP_LOGI(TAG, "%s Pin number: %d, Level: %s", time_buff, pin->number, level ? "High" : "Low");
 
     gpio_set_level(pin->number, level);
     pin->level = level;
