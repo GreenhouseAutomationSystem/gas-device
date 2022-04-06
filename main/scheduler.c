@@ -8,11 +8,30 @@ void schedule_task(void *_schedules)
 
     int time = time_now_to_sec();
 
-    // Find starting indexes
-    int index[MAX_SCHEDULES];
+    // Flatten schedules to array
+    int time_axis_lengths[MAX_SCHEDULES] = {0};
+    int time_axes[MAX_SCHEDULES][SCHEDULE_MAX_INTERVALS * 2] = {0};
     for (size_t s = 0; s < MAX_SCHEDULES; s++)
     {
         schedule_t *schedule = &schedules[s];
+        time_axis_lengths[s] = schedule->intervals_count * 2;
+        for (size_t i = 0; i < schedule->intervals_count; i++)
+        {
+            interval_t interval = schedule->intervals[i];
+
+            time_axes[s][2 * i] = interval.start;
+            time_axes[s][(2 * i) + 1] = interval.end;
+        }
+    }
+
+    // Find starting indexes
+    int index[MAX_SCHEDULES] = {0};
+    for (size_t s = 0; s < MAX_SCHEDULES; s++)
+    {
+        schedule_t *schedule = &schedules[s];
+        int *time_axis = time_axes[s];
+        int time_axis_length = time_axis_lengths[s];
+
         ESP_LOGI(TAG, "max %d", schedule->period);
         ESP_LOGI(TAG, "count %d", schedule->intervals_count);
         ESP_LOGI(TAG, "pin %d", schedule->pin.number);
@@ -22,19 +41,25 @@ void schedule_task(void *_schedules)
             ESP_LOGI(TAG, "end %d", schedule->intervals[i].end);
         }
 
-        for (size_t i = 0; i < schedule->intervals_count; i++)
+        int schedule_time = time % schedule->period;
+        for (size_t i = 0; i < time_axis_length; i++)
         {
             // TODO: check if we can not miss any time record coz of < <=
-            if (time % schedule->period < schedule->intervals[i].end)
+            if (schedule_time < time_axis[i])
             {
                 index[s] = i;
+                pin_set(&schedule->pin, i % 2);
                 break;
             }
         }
+    }
 
-        if (index[s] >= schedule->intervals_count)
+    for (size_t s = 0; s < MAX_SCHEDULES; s++)
+    {
+        ESP_LOGI(TAG, "axis lenght %d", time_axis_lengths[s]);
+        for (size_t i = 0; i < time_axis_lengths[s]; i++)
         {
-            index[s] = 0;
+            ESP_LOGI(TAG, "key: %d, value: %d", i, time_axes[s][i]);
         }
     }
 
@@ -44,27 +69,22 @@ void schedule_task(void *_schedules)
         for (size_t s = 0; s < MAX_SCHEDULES; s++)
         {
             schedule_t *schedule = &schedules[s];
+            int *time_axis = time_axes[s];
+            int time_axis_length = time_axis_lengths[s];
 
-            if (schedule->intervals_count == 0)
+            if (time_axis_length <= 0)
             {
                 continue;
             }
 
-            bool level = schedule->pin.level;
-            bool change = level ? schedule->intervals[index[s]].end <= (time % schedule->period)
-                                : schedule->intervals[index[s]].start <= (time % schedule->period) &&
-                                      (time % schedule->period) < schedule->intervals[index[s]].end;
+            int idx = index[s];
+            int period = schedule->period;
+            int schedule_time = time % period;
 
-            if (change)
+            if (time_axis[idx] <= schedule_time || (idx == time_axis_length - 1 && schedule_time < time_axis[idx - 1]))
             {
-                pin_set(&schedule->pin, !level);
-            }
-
-            index[s] += change && level;
-
-            if (index[s] >= schedule->intervals_count)
-            {
-                index[s] = 0;
+                pin_set(&schedule->pin, !schedule->pin.level);
+                index[s] = (idx + 1) % time_axis_length;
             }
         }
 
@@ -87,7 +107,7 @@ void scheduler_start(scheduler_t *scheduler)
 
     ESP_LOGI(TAG, "Creating task");
     // Stack size once hit 1756 B
-    xTaskCreate(schedule_task, TAG, 2 * 1024, scheduler->schedules, configMAX_PRIORITIES - 1, &scheduler->task);
+    xTaskCreate(schedule_task, TAG, 8 * 1024, scheduler->schedules, configMAX_PRIORITIES - 1, &scheduler->task);
 }
 
 void scheduler_stop(scheduler_t *scheduler)
