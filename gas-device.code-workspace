@@ -1,0 +1,58 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"macro_utils.h": "c",
+			"threadapi.h": "c",
+			"platform.h": "c",
+			"iothub_device_client.h": "c",
+			"wifi.h": "c",
+			"nvs_flash.h": "c",
+			"stdio.h": "c",
+			"nvs.h": "c",
+			"esp_partition.h": "c",
+			"esp_err.h": "c",
+			"esp_attr.h": "c",
+			"stddef.h": "c",
+			"esp_flash.h": "c",
+			"freertos.h": "c",
+			"task.h": "c",
+			"esp_wifi.h": "c",
+			"adc.h": "c",
+			"state.h": "c",
+			"time_utils.h": "c",
+			"sntp.h": "c",
+			"*.ipp": "c",
+			"cstring": "c",
+			"*.inc": "c",
+			"bitset": "c",
+			"chrono": "c",
+			"algorithm": "c",
+			"interval.h": "c",
+			"iothub_client_options.h": "c",
+			"temperature_sensor.h": "c",
+			"controller.h": "c",
+			"device_twin.h": "c",
+			"future": "c",
+			"istream": "c",
+			"ostream": "c",
+			"*.tcc": "c",
+			"string.h": "c"
+		},
+		"git.autoRepositoryDetection": false
+	},
+	"extensions": {
+		"recommendations": [
+			"jeff-hykin.better-cpp-syntax",
+			"ms-vscode.cpptools",
+			"ms-vscode.cpptools-themes",
+			"cschlosser.doxdocgen",
+			"espressif.esp-idf-extension",
+			"VisualStudioExptTeam.vscodeintellicode"
+		]
+	}
+}
