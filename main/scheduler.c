@@ -9,32 +9,18 @@ void schedule_task(void *_schedules)
     int time = time_now_to_sec();
 
     // Find starting indexes
-    int index[MAX_SCHEDULES];
+    int index[MAX_SCHEDULES] = {0};
     for (size_t s = 0; s < MAX_SCHEDULES; s++)
     {
         schedule_t *schedule = &schedules[s];
-        ESP_LOGI(TAG, "max %d", schedule->period);
-        ESP_LOGI(TAG, "count %d", schedule->intervals_count);
-        ESP_LOGI(TAG, "pin %d", schedule->pin.number);
-        for (size_t i = 0; i < schedule->intervals_count; i++)
-        {
-            ESP_LOGI(TAG, "start %d", schedule->intervals[i].start);
-            ESP_LOGI(TAG, "end %d", schedule->intervals[i].end);
-        }
 
         for (size_t i = 0; i < schedule->intervals_count; i++)
         {
-            // TODO: check if we can not miss any time record coz of < <=
             if (time % schedule->period < schedule->intervals[i].end)
             {
                 index[s] = i;
                 break;
             }
-        }
-
-        if (index[s] >= schedule->intervals_count)
-        {
-            index[s] = 0;
         }
     }
 
@@ -50,21 +36,24 @@ void schedule_task(void *_schedules)
                 continue;
             }
 
-            bool level = schedule->pin.level;
-            bool change = level ? schedule->intervals[index[s]].end <= (time % schedule->period)
-                                : schedule->intervals[index[s]].start <= (time % schedule->period) &&
-                                      (time % schedule->period) < schedule->intervals[index[s]].end;
+            int idx = index[s];
+            interval_t interval = schedule->intervals[idx];
+            int local_time = time % schedule->period;
 
-            if (change)
+            if (interval.start <= local_time && local_time < interval.end)
             {
-                pin_set(&schedule->pin, !level);
+                if (!schedule->pin.level)
+                {
+                    pin_set(&schedule->pin, true);
+                }
             }
-
-            index[s] += change && level;
-
-            if (index[s] >= schedule->intervals_count)
+            else if (schedule->pin.level)
             {
-                index[s] = 0;
+                idx = index[s] = (idx + 1) % schedule->intervals_count;
+                if (interval.end != schedule->period || schedule->intervals[idx].start != 0)
+                {
+                    pin_set(&schedule->pin, false);
+                }
             }
         }
 
