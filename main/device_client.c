@@ -66,7 +66,7 @@ void device_reporter_task(void *param)
         IoTHubMessage_Destroy(message);
         json_free_serialized_string(message_string);
 
-        ThreadAPI_Sleep(5 * 60000);
+        ThreadAPI_Sleep(60 * 60000);
     }
 }
 
