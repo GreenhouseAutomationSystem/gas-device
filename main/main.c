@@ -1,4 +1,4 @@
-#include "device_twin.h"
+#include "device_client.h"
 #include "time_utils.h"
 #include "wifi.h"
 #include <nvs_flash.h>
@@ -18,5 +18,5 @@ void app_main(void)
 
     wifi_init();
 
-    device_twin_init();
+    device_client_init();
 }

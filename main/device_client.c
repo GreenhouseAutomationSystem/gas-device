@@ -1,6 +1,6 @@
-#include "device_twin.h"
+#include "device_client.h"
 
-static const char *TAG = "device_twin";
+static const char *TAG = "DEVICE_CLIENT";
 
 static const char *connection_string = CONFIG_IOTHUB_CONNECTION_STRING;
 
@@ -80,7 +80,7 @@ void device_twin_task(void *param)
     vTaskDelete(NULL);
 }
 
-void device_twin_init()
+void device_client_init()
 {
     if (IoTHub_Init() != 0)
     {

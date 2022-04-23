@@ -1,2 +1,2 @@
-idf_component_register(SRCS "scheduler.c" "time_utils.c" "interval.c" "pin.c" "state.c" "controller.c" "device_twin.c" "main.c" "wifi.c" "temperature_sensor.c"
+idf_component_register(SRCS "device_client.c" "scheduler.c" "time_utils.c" "interval.c" "pin.c" "state.c" "controller.c" "main.c" "wifi.c" "temperature_sensor.c"
                     INCLUDE_DIRS ".")

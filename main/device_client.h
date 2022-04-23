@@ -1,5 +1,5 @@
-#ifndef DEVICE_TWIN_H
-#define DEVICE_TWIN_H
+#ifndef DEVICE_CLIENT_H
+#define DEVICE_CLIENT_H
 
 #include "esp_log.h"
 #include "esp_system.h"
@@ -23,6 +23,6 @@
 #include "sdkconfig.h"
 #include <esp_wifi.h>
 
-void device_twin_init();
+void device_client_init();
 
 #endif
