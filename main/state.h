@@ -8,8 +8,6 @@
 
 typedef struct state
 {
-    char *name;
-    char *status;
     scheduler_t scheduler;
 } state_t;
 

@@ -5,8 +5,6 @@
 
 void state_init(state_t *state)
 {
-    state->name = "GAS-0.1.0";
-    state->status = "active";
     scheduler_init(&state->scheduler);
 }
 
