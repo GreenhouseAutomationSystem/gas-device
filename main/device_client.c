@@ -70,7 +70,7 @@ void device_reporter_task(void *param)
     }
 }
 
-void device_twin_task(void *param)
+void device_client_task(void *param)
 {
     while (true)
     {
@@ -108,7 +108,7 @@ void device_client_init()
         abort();
     }
 
-    if (xTaskCreate(&device_twin_task, "device_twin_task", 1024 * 6, NULL, 5, NULL) != pdPASS)
+    if (xTaskCreate(&device_client_task, "device_client_task", 1024 * 6, NULL, 5, NULL) != pdPASS)
     {
         ESP_LOGE(TAG, "%s", "Failed to start client task, aborting...");
         abort();

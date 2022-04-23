@@ -41,7 +41,8 @@
 			"istream": "c",
 			"ostream": "c",
 			"*.tcc": "c",
-			"string.h": "c"
+			"string.h": "c",
+			"device_client.h": "c"
 		},
 		"git.autoRepositoryDetection": false
 	},
